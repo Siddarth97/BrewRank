@@ -1,6 +1,6 @@
 
 import { GoogleGenAI } from "@google/genai";
-import { CoffeeShop, AnalysisResult } from "./types";
+import { CoffeeShop, AnalysisResult } from "../types";
 
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
 
@@ -8,8 +8,8 @@ export async function analyzeCoffeeShops(
   location: { lat: number; lng: number } | string,
   query: string = "Best coffee shops"
 ): Promise<AnalysisResult> {
-  const model = "gemini-2.5-flash"; 
-  
+  const model = "gemini-2.5-flash";
+
   const toolConfig = typeof location !== 'string' ? {
     retrievalConfig: {
       latLng: {
@@ -52,7 +52,7 @@ export async function analyzeCoffeeShops(
 
     const text = response.text || "";
     const chunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks || [];
-    
+
     const groundingUrls = chunks
       .filter(chunk => chunk.maps)
       .map(chunk => ({
@@ -61,7 +61,7 @@ export async function analyzeCoffeeShops(
       }));
 
     const shops: CoffeeShop[] = [];
-    
+
     // Improved robust parsing using the custom delimiters
     const shopBlocks = text.split(/---SHOP---/i).filter(b => b.trim().length > 10);
 
@@ -77,12 +77,12 @@ export async function analyzeCoffeeShops(
       if (name) {
         // Try to match with grounding data for rating if possible, otherwise default
         const mapsUrl = groundingUrls.find(u => u.title.toLowerCase().includes(name.toLowerCase()))?.uri || groundingUrls[index]?.uri || "#";
-        
+
         shops.push({
           id: `shop-${index}-${Date.now()}`,
           name,
           address,
-          rating: 4.5, 
+          rating: 4.5,
           reviewCount: 0,
           tasteScore: taste,
           varietyScore: variety,
