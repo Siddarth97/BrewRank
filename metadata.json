@@ -1,0 +1,7 @@
+{
+  "name": "BrewRank",
+  "description": "Compare local coffee shops based on taste, variety, and ambience using AI-powered review analysis and real-time grounding.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
